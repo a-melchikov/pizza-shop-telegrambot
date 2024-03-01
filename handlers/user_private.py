@@ -15,7 +15,7 @@ async def start_cmd(message: types.Message):
 
 @user_private_router.message(or_f(Command('menu'), (F.text.lower() == "меню")))
 async def menu_cmd(message: types.Message):
-    await message.answer("Вот меню:")
+    await message.answer("Вот меню:", reply_markup=reply.del_kbd)
 
 
 @user_private_router.message(or_f(F.text.lower() == "о нас", F.text.lower() == "о магазине"))
