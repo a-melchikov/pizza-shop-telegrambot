@@ -11,9 +11,7 @@ user_private_router.message.filter(ChatTypeFilter(['private']))
 @user_private_router.message(CommandStart())
 async def start_cmd(message: types.Message):
     await message.answer("Привет, я виртуальный помощник",
-                         reply_markup=reply.start_kb3.as_markup(
-                             resize_keyboard=True,
-                             input_field_placeholder="Что вас интересует?",))
+                         reply_markup=reply.test_kb)
 
 
 @user_private_router.message(or_f(Command('menu'), (F.text.lower() == "меню")))
@@ -37,3 +35,15 @@ async def payment_cmd(message: types.Message):
 @user_private_router.message(Command('shipping'))
 async def shipping_cmd(message: types.Message):
     await message.answer("Варианты доставки:")
+
+
+@user_private_router.message(F.contact)
+async def get_contact(message: types.Message):
+    await message.answer(f"номер получен")
+    await message.answer(str(message.contact))
+
+
+@user_private_router.message(F.location)
+async def get_location(message: types.Message):
+    await message.answer(f"локация получена")
+    await message.answer(str(message.location))
