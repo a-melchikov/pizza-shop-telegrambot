@@ -46,7 +46,23 @@ async def payment_cmd(message: types.Message):
 @user_private_router.message(F.text.lower().contains('доставк'))
 @user_private_router.message(Command('shipping'))
 async def shipping_cmd(message: types.Message):
-    await message.answer("<b>Варианты доставки:</b>")
+    text = as_list(
+        as_marked_section(
+            Bold("Варианты доставки/заказа:"),
+            "Курьер",
+            "Самовынос (сейчас прибегу заберу)",
+            "Покушаю у Вас (сейчас прибегу)",
+            marker='✅ ',
+        ),
+        as_marked_section(
+            Bold("Нельзя:"),
+            "Почта",
+            "Голуби",
+            marker='❌ ',
+        ),
+        sep='\n-------------------------\n',
+    )
+    await message.answer(text.as_html())
 
 
 @user_private_router.message(F.contact)
