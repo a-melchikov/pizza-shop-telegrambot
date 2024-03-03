@@ -102,6 +102,11 @@ async def add_name(message: types.Message, state: FSMContext):
     await state.set_state(AddProduct.description)
 
 
+@admin_router.message(AddProduct.name)
+async def add_name(message: types.Message, state: FSMContext):
+    await message.answer("Вы ввели недопустимые данные, введите текст названия товара")
+
+
 @admin_router.message(AddProduct.description, F.text)
 async def add_description(message: types.Message, state: FSMContext):
     await state.update_data(description=message.text)
