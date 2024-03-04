@@ -1,16 +1,16 @@
-from common.bot_cmds_list import private
-from handlers.admin_private import admin_router
-from handlers.user_group import user_group_router
-from handlers.user_private import user_private_router
 import asyncio
 import os
 
 from aiogram import Bot, Dispatcher, types
 from aiogram.enums import ParseMode
 
+from common.bot_cmds_list import private
+from handlers.admin_private import admin_router
+from handlers.user_group import user_group_router
+from handlers.user_private import user_private_router
+
 from dotenv import find_dotenv, load_dotenv
 load_dotenv(find_dotenv())
-
 
 ALLOWED_UPDATES = ['message, edited_message']
 
