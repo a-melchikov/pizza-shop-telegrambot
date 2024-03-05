@@ -20,10 +20,6 @@ bot.my_admins_list = []
 
 dp = Dispatcher()
 
-# dp.update.middleware(CounterMiddleware()) middleware для диспетчера
-# admin_router.message.outer_middleware(CounterMiddleware()) работает до фильтров
-admin_router.message.middleware(CounterMiddleware())
-
 dp.include_router(user_private_router)
 dp.include_router(user_group_router)
 dp.include_router(admin_router)

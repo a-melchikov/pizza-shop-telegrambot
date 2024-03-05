@@ -37,8 +37,7 @@ async def change_product(message: types.Message):
 
 
 @admin_router.message(F.text == "Удалить товар")
-async def delete_product(message: types.Message, counter):
-    print(counter)
+async def delete_product(message: types.Message):
     await message.answer("Выберите товар(ы) для удаления")
 
 
