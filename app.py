@@ -5,13 +5,14 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.enums import ParseMode
 
 from common.bot_cmds_list import private
+from database.engine import create_db, drop_db
 from handlers.admin_private import admin_router
 from handlers.user_group import user_group_router
 from handlers.user_private import user_private_router
-from middlewares.db import CounterMiddleware
 
 from dotenv import find_dotenv, load_dotenv
 load_dotenv(find_dotenv())
+
 
 ALLOWED_UPDATES = ['message, edited_message']
 
@@ -25,7 +26,21 @@ dp.include_router(user_group_router)
 dp.include_router(admin_router)
 
 
+async def on_startup(bot):
+    run_param = False
+    if run_param:
+        await drop_db()
+    await create_db()
+
+
+async def on_shutdown(bot):
+    print('бот лег')
+
+
 async def main():
+    dp.startup.register(on_startup)
+    dp.shutdown.register(on_shutdown)
+
     await bot.delete_webhook(drop_pending_updates=True)
     # await bot.delete_my_commands(scope=types.BotCommandScopeAllPrivateChats())
     await bot.set_my_commands(commands=private, scope=types.BotCommandScopeAllPrivateChats())

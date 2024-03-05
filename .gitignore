@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 
 .vscode
+my_base.db
