@@ -8,6 +8,7 @@ from common.bot_cmds_list import private
 from handlers.admin_private import admin_router
 from handlers.user_group import user_group_router
 from handlers.user_private import user_private_router
+from middlewares.db import CounterMiddleware
 
 from dotenv import find_dotenv, load_dotenv
 load_dotenv(find_dotenv())
@@ -18,6 +19,10 @@ bot = Bot(token=os.getenv('TOKEN'), parse_mode=ParseMode.HTML)
 bot.my_admins_list = []
 
 dp = Dispatcher()
+
+# dp.update.middleware(CounterMiddleware()) middleware для диспетчера
+# admin_router.message.outer_middleware(CounterMiddleware()) работает до фильтров
+admin_router.message.middleware(CounterMiddleware())
 
 dp.include_router(user_private_router)
 dp.include_router(user_group_router)
