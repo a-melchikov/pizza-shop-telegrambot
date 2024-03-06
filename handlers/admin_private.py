@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from database.orm_query import orm_add_product, orm_get_products
 
 from filters.chat_types import ChatTypeFilter, IsAdmin
+from kbds.inline import get_callback_btns
 from kbds.reply import get_keyboard
 
 
@@ -33,6 +34,10 @@ async def starring_at_product(message: types.Message, session: AsyncSession):
             product.image,
             caption=f"<strong>{product.name}\
                 </strong>\n{product.description}\nСтоимость: {round(product.price, 2)}",
+            reply_markup=get_callback_btns(btns={
+                'Удалить': f'delete_{product.id}',
+                'Изменить': f'change_{product.id}',
+            })
         )
     await message.answer("ОК, вот список товаров")
 
