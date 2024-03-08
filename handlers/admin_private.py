@@ -3,7 +3,13 @@ from aiogram.filters import Command, StateFilter, or_f
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from sqlalchemy.ext.asyncio import AsyncSession
-from database.orm_query import orm_add_product, orm_delete_product, orm_get_product, orm_get_products, orm_update_product
+from database.orm_query import (
+    orm_add_product,
+    orm_delete_product,
+    orm_get_product,
+    orm_get_products,
+    orm_update_product,
+)
 
 from filters.chat_types import ChatTypeFilter, IsAdmin
 from kbds.inline import get_callback_btns
@@ -32,10 +38,10 @@ class AddProduct(StatesGroup):
     product_for_change = None
 
     texts = {
-        'AddProduct:name': 'Введите название заново:',
-        'AddProduct:description': 'Введите описание заново:',
-        'AddProduct:price': 'Введите стоимость заново:',
-        'AddProduct:image': 'Этот стейт последний, поэтому...',
+        "AddProduct:name": "Введите название заново:",
+        "AddProduct:description": "Введите описание заново:",
+        "AddProduct:price": "Введите стоимость заново:",
+        "AddProduct:image": "Этот стейт последний, поэтому...",
     }
 
 
@@ -51,15 +57,17 @@ async def starring_at_product(message: types.Message, session: AsyncSession):
             product.image,
             caption=f"<strong>{product.name}\
                 </strong>\n{product.description}\nСтоимость: {round(product.price, 2)}",
-            reply_markup=get_callback_btns(btns={
-                'Удалить': f'delete_{product.id}',
-                'Изменить': f'change_{product.id}',
-            })
+            reply_markup=get_callback_btns(
+                btns={
+                    "Удалить": f"delete_{product.id}",
+                    "Изменить": f"change_{product.id}",
+                }
+            ),
         )
     await message.answer("ОК, вот список товаров")
 
 
-@admin_router.callback_query(F.data.startswith('delete_'))
+@admin_router.callback_query(F.data.startswith("delete_"))
 async def delete_product(callback: types.CallbackQuery, session: AsyncSession):
     product_id = callback.data.split("_")[-1]
     await orm_delete_product(session, int(product_id))
@@ -100,8 +108,8 @@ async def add_product(message: types.Message, state: FSMContext):
 
 # Хендлер отмены и сброса состояния должен быть всегда именно здесь,
 # после того как только встали в состояние номер 1 (элементарная очередность фильтров)
-@admin_router.message(StateFilter('*'), Command("отмена"))
-@admin_router.message(StateFilter('*'), F.text.casefold() == "отмена")
+@admin_router.message(StateFilter("*"), Command("отмена"))
+@admin_router.message(StateFilter("*"), F.text.casefold() == "отмена")
 async def cancel_handler(message: types.Message, state: FSMContext) -> None:
     current_state = await state.get_state()
     if current_state is None:
@@ -114,34 +122,40 @@ async def cancel_handler(message: types.Message, state: FSMContext) -> None:
 
 
 # Вернутся на шаг назад (на прошлое состояние)
-@admin_router.message(StateFilter('*'), Command("назад"))
-@admin_router.message(StateFilter('*'), F.text.casefold() == "назад")
+@admin_router.message(StateFilter("*"), Command("назад"))
+@admin_router.message(StateFilter("*"), F.text.casefold() == "назад")
 async def back_step_handler(message: types.Message, state: FSMContext) -> None:
     current_state = await state.get_state()
 
     if current_state == AddProduct.name:
-        await message.answer('Предыдущего шага нет, или введите название товара или напишите "отмена"')
+        await message.answer(
+            'Предыдущего шага нет, или введите название товара или напишите "отмена"'
+        )
         return
 
     previous = None
     for step in AddProduct.__all_states__:
         if step.state == current_state:
             await state.set_state(previous)
-            await message.answer(f"Ок, вы вернулись к прошлому шагу \n {AddProduct.texts[previous.state]}")
+            await message.answer(
+                f"Ок, вы вернулись к прошлому шагу \n {AddProduct.texts[previous.state]}"
+            )
             return
         previous = step
 
 
 # Ловим данные для состояние name и потом меняем состояние на description
-@admin_router.message(AddProduct.name, or_f(F.text, F.text == '.'))
+@admin_router.message(AddProduct.name, or_f(F.text, F.text == "."))
 async def add_name(message: types.Message, state: FSMContext):
-    if message.text == '.':
+    if message.text == ".":
         await state.update_data(name=AddProduct.product_for_change)
     else:
         # Дополнительная проверка с выходом из хендлера
         # не меняя состояние с отправкой соответствующего сообщения
         if len(message.text) >= 100:
-            await message.answer("Название товара не должно превышать 100 символов. \n Введите заново")
+            await message.answer(
+                "Название товара не должно превышать 100 символов. \n Введите заново"
+            )
             return
 
         await state.update_data(name=message.text)

@@ -6,10 +6,10 @@ from database.models import Product
 
 async def orm_add_product(session: AsyncSession, data: dict):
     obj = Product(
-        name=data['name'],
-        description=data['description'],
-        price=float(data['price']),
-        image=data['image'],
+        name=data["name"],
+        description=data["description"],
+        price=float(data["price"]),
+        image=data["image"],
     )
     session.add(obj)
     await session.commit()
@@ -28,11 +28,16 @@ async def orm_get_product(session: AsyncSession, product_id: int):
 
 
 async def orm_update_product(session: AsyncSession, product_id: int, data):
-    query = update(Product).where(Product.id == product_id).values(
-        name=data["name"],
-        description=data["description"],
-        price=float(data["price"]),
-        image=data["image"],)
+    query = (
+        update(Product)
+        .where(Product.id == product_id)
+        .values(
+            name=data["name"],
+            description=data["description"],
+            price=float(data["price"]),
+            image=data["image"],
+        )
+    )
     await session.execute(query)
     await session.commit()
 
