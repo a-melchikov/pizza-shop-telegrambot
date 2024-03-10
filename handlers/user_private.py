@@ -10,7 +10,7 @@ from database.orm_query import (
 
 from filters.chat_types import ChatTypeFilter
 from handlers.menu_processing import get_menu_content
-from kbds.inline import MenuCallBack, get_callback_btns
+from kbds.inline import MenuCallBack
 
 
 user_private_router = Router()
