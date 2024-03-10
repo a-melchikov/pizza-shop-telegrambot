@@ -1,3 +1,4 @@
+from unicodedata import category
 from aiogram import F, types, Router
 from aiogram.filters import CommandStart
 
@@ -35,6 +36,8 @@ async def user_menu(
         session,
         level=callback_data.level,
         menu_name=callback_data.menu_name,
+        category=callback_data.category,
+        page=callback_data.page,
     )
 
     await callback.message.edit_media(media=media, reply_markup=reply_markup)

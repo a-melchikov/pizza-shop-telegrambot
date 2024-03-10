@@ -17,6 +17,7 @@ from database.orm_query import (
 )
 
 from filters.chat_types import ChatTypeFilter, IsAdmin
+from kbds.inline import get_callback_btns
 
 from kbds.reply import get_keyboard
 
